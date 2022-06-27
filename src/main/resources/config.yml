@@ -1,0 +1,10 @@
+# DO NOT CHANGE THIS
+configVersion: 1
+
+# MySQL credentials
+sql:
+  server: "localhost"
+  port: 1433
+  database: "turtle_server"
+  user: "turtle_server"
+  pass: "tutel"
