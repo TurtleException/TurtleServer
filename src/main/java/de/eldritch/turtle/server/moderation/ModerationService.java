@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Category;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -100,11 +101,19 @@ public class ModerationService {
 
     /* ----- ----- ----- */
 
-    public @Nullable SupportTicket getTicketSupport(long turtleID) {
+    public Collection<SupportTicket> getSupportTicketsView() {
+        return ticketSupportCache.values();
+    }
+
+    public Collection<ApplyTicket> getApplyTicketsView() {
+        return ticketApplyCache.values();
+    }
+
+    public @Nullable SupportTicket getSupportTicket(long turtleID) {
         return ticketSupportCache.get(turtleID);
     }
 
-    public @Nullable ApplyTicket getTicketApply(long turtleID) {
+    public @Nullable ApplyTicket getApplyTicket(long turtleID) {
         return ticketApplyCache.get(turtleID);
     }
 
@@ -114,7 +123,7 @@ public class ModerationService {
      * Registers a support ticket to the backing database and puts it in the cache.
      * @param ticket The ticket object.
      */
-    void register(@NotNull SupportTicket ticket) {
+    public void register(@NotNull SupportTicket ticket) {
         // put ticket into cache
         ticketSupportCache.put(ticket.getID(), ticket);
 
@@ -126,7 +135,7 @@ public class ModerationService {
      * Registers an application ticket to the backing database and puts it in the cache.
      * @param ticket The ticket object.
      */
-    void register(@NotNull ApplyTicket ticket) {
+    public void register(@NotNull ApplyTicket ticket) {
         // put ticket into cache
         ticketApplyCache.put(ticket.getID(), ticket);
 

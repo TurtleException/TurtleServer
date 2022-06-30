@@ -39,6 +39,11 @@ public class User implements Turtle {
 
     private final Set<Group> groups = Sets.newConcurrentHashSet();
 
+    /**
+     * Last known name of the user (focus on Discord).
+     */
+    private String name;
+
     public User(long turtleID, UserService uService) {
         this.turtleID = turtleID;
         this.uService = uService;
@@ -64,6 +69,10 @@ public class User implements Turtle {
 
     public @NotNull Set<Group> getGroups() {
         return groups;
+    }
+
+    public @NotNull String getName() {
+        return name != null ? name : "unknown";
     }
 
     /* ----- ----- ----- */

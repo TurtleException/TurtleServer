@@ -27,4 +27,10 @@ public class MiscUtil {
             Thread.sleep(20L);
         }
     }
+
+    public static @NotNull String cut(@NotNull String str, int length) {
+        if (str.length() > length)
+            return str.substring(length);
+        return str;
+    }
 }

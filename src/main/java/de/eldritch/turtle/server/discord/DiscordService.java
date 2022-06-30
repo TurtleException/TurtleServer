@@ -7,8 +7,11 @@ import de.eldritch.turtle.server.util.logging.logback.JavaLoggingAppender;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.security.auth.login.LoginException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -18,7 +21,7 @@ import java.util.logging.Level;
  * <p>This class holds the main {@link JDA} instance that is connected to the Discord bot equivalent of this
  * application. All traffic to this bot should always happen through said instance to ensure correct handling of rate
  * limits.
- * <p>One extra functionality of this class is the management of statics via the {@link StaticManager}. See the
+ * <p>One extra functionality of this class is the management of {@link StaticMessage StaticMessages}. See the
  * corresponding documentation for further information.
  */
 public class DiscordService {
@@ -50,17 +53,20 @@ public class DiscordService {
             // TODO
     );
 
-    private final StaticManager statics = new StaticManager(this);
+    private final ConcurrentHashMap<String, Interaction> interactionIndex = new ConcurrentHashMap<>();
 
     public DiscordService() throws LoginException {
         this.init();
-
-        statics.register(new StaticRuleManager());
-        statics.register(new StaticTicketSupportManager());
     }
 
     public void init() throws LoginException {
+        /* --- JDA */
         jda = builder.build();
+
+        /* --- INTERACTIONS */
+        interactionIndex.clear();
+        for (Interaction interaction : Interaction.buildInteractions(this))
+            interactionIndex.put(interaction.getKey(), interaction);
     }
 
     public void shutdown() {
@@ -93,11 +99,17 @@ public class DiscordService {
 
     /* ----- ----- ----- */
 
+    public @Nullable Interaction getInteraction(@NotNull String key) {
+        return interactionIndex.get(key);
+    }
+
+    /* ----- ----- ----- */
+
     public JDA getJDA() {
         return jda;
     }
 
-    public StaticManager getStatics() {
-        return statics;
+    public NestedToggleLogger getLogger() {
+        return logger;
     }
 }
